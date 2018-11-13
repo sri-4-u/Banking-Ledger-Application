@@ -23,7 +23,9 @@ inquirer.prompt(questions).then((answers) => {
 
 });
 
-//Prompt User to Register
+/*
+This method prompts user to register in-order to access the bank account
+ */
 registerUser = function () {
     let questions = [
         {
@@ -58,20 +60,22 @@ registerUser = function () {
 
     });
 };
-//Prompts user to login
+/*
+This method prompt the user to login in-order to access the bank account
+ */
 signInUser = function (username) {
     let questions = [
         {
             message: "Enter your username to login:",
             type: "input",
             name: "Username",
-            validate: validateInput //to-do
+            validate: validateInput
         },
         {
             message: "Enter your password:",
             type: "password",
             name: "Password",
-            //validate: validatePassword // to-do
+            validate: validatePassword
         }
     ];
     inquirer.prompt(questions).then((answers) => {
@@ -102,7 +106,10 @@ signInUser = function (username) {
     });
 };
 
-//Record a Deposit/Withdrawl/Transaction History
+/*
+This method acts a controller for handling requests made by the user
+This method invokes the logic based on user's selection
+ */
 bankBalance = function (username) {
     let questions = [
         {
@@ -154,7 +161,7 @@ bankBalance = function (username) {
     });
 };
 
-//helper methods to
+//methods performing validation checks
 validateInput = function (answers) {
     return answers!='';
 }
