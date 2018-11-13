@@ -1,0 +1,37 @@
+{
+  "name": "Banking-Ledger-Application",
+  "version": "0.0.1",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "Srinivas Tanneru",
+  "license": "ISC",
+  "bin": {
+    "check-account": "config/inquirer.js"
+  },
+  "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "commander": "^2.19.0",
+    "connect-flash": "latest",
+    "connect-redis": "latest",
+    "cookie-parser": "latest",
+    "ejs": "latest",
+    "express": "latest",
+    "express-session": "latest",
+    "express-session-fixation": "latest",
+    "fs": "latest",
+    "https": "latest",
+    "inquirer": "^6.2.0",
+    "jshint": "latest",
+    "method-override": "latest",
+    "mocha": "latest",
+    "morgan": "latest",
+    "passport": "latest",
+    "passport-local": "latest",
+    "redis": "^2.8.0",
+    "req-flash": "latest",
+    "sinon": "latest"
+  }
+}
