@@ -52,9 +52,7 @@ registerUser = function () {
             else {
                 client.hmset(`${answers.Username}`, ['password', bcrypt.hashSync(`${answers.Password}`, null, null), 'Deposits', 0]); //hash passwords
                 console.log('Registered Successfully ... Please proceed to sign-in');
-                setTimeout(function () {
-                    signInUser(`${answers.Username}`);
-                }, 1000);
+                signInUser(`${answers.Username}`);
             }
         });
 
@@ -68,14 +66,12 @@ signInUser = function (username) {
         {
             message: "Enter your username to login:",
             type: "input",
-            name: "Username",
-            validate: validateInput
+            name: "Username"
         },
         {
             message: "Enter your password:",
             type: "password",
-            name: "Password",
-            validate: validatePassword
+            name: "Password"
         }
     ];
     inquirer.prompt(questions).then((answers) => {
@@ -153,23 +149,30 @@ bankBalance = function (username) {
             });
         }
         else if (`${answers.bankBal}` === 'Check Balance') {
-            checkBalance(username);
+                checkBalance(username);
         }
         else if (`${answers.bankBal}` === 'Transaction History') {
-            checkTransaction(username);
+                checkTransaction(username);
         }
     });
 };
 
 //methods performing validation checks
 validateInput = function (answers) {
-    return answers!='';
+    if(answers === '')
+        return answers!='';
+    var reg =/^[a-zA-Z0-9.\-_$@*!]{3,20}$/;
+        return reg.test(answers) || "Username should be in between 3 to 20 characters, it should not contain any spaces or ','";
 }
-validatePassword = function (answers) {
-    return answers!='';
+validatePassword = function (password) {
+    if(password === '')
+        return answers!='';
+    var reg = /^[A-Za-z0-9_.@#$*!^]{6,20}$/;
+    return reg.test(password) || "Password should be in between 6 to 20 characters with at least one special character";
 }
 validateValue = function (value) {
     var reg = /^\d+(\.\d{1,2})?$/;
-    return reg.test(value) || "Amount should be a number!";
+        return reg.test(value) || "Amount should be a number!";
 }
+
 module.exports = {bankBalance};

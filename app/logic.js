@@ -4,6 +4,7 @@ This is Javascript file consists of the logic which is used by the application
 const redis = require('redis');
 const client = redis.createClient();
 const currency = '$';
+const attachedKey = 'key';
 require('../config/inquirer')
 
 /*
@@ -11,20 +12,20 @@ The method makeDeposit is to make deposits into the bank account. The method tak
 username and the amount of money to be deposited
  */
 makeDeposit = function (username, moneyToBeDeposited) {
-    client.hget(username, 'Deposits', function (err, reply) {
+    client.hget(username, 'Deposits' , function (err, reply) {
         if (err)
             throw err;
         let money = Number(reply) + Number(moneyToBeDeposited);
-        client.hmset(username, 'Deposits', money);
-        console.log('Amount deposited in your account - '+ money+currency);
-        client.lpush([username + 'key', moneyToBeDeposited], function (err) {
+        client.hmset(username, 'Deposits' , money);
+        console.log('Amount deposited in your account - '+ money + currency);
+        client.lpush([username + attachedKey, moneyToBeDeposited], function (err) {
             if (err)
                 throw err;
         });
     });
     setTimeout(function () {
         bankBalance(username);
-    }, 3000);
+    },2000);
 };
 
 
@@ -33,17 +34,17 @@ This method makeWithdrawl is for the withdrawl of amount from the existing bank 
 The method takes username and the amount to be withdrawn from the account by the user.
  */
 makeWithdrawl = function (username, amountToBeWithdrawn) {
-    client.hget(username, 'Deposits', function (err, res) {
+    client.hget(username, 'Deposits' , function (err, res) {
         if (err)
             throw err;
         let money = Number(amountToBeWithdrawn);
         console.log(money);
         if (money < res) {
-            console.log('Amount Withdrawn - '+ amountToBeWithdrawn+currency);
+            console.log('Amount Withdrawn - '+ amountToBeWithdrawn + currency);
             let newBalance = res - amountToBeWithdrawn;
-            client.hmset(username, 'Deposits', newBalance);
+            client.hmset(username, 'Deposits' , newBalance);
             let money = -amountToBeWithdrawn;
-            client.lpush(username + 'key', money, function (err) {
+            client.lpush(username + attachedKey, money, function (err) {
                 if (err)
                     throw err;
             });
@@ -59,11 +60,11 @@ makeWithdrawl = function (username, amountToBeWithdrawn) {
 This method checkTransaction
  */
 checkTransaction = function (username) {
-    client.lrange(username + 'key', 0, -1, function (err, responseArray) {
+    client.lrange(username + attachedKey, 0, -1, function (err, responseArray) {
         if (err)
             throw err;
         if(responseArray.length > 0) {
-            client.llen(username + 'key', function (err, length) {
+            client.llen(username + attachedKey, function (err, length) {
                 if (err)
                     throw err;
                 for (var i = 0; i < length; i++) {
@@ -72,7 +73,7 @@ checkTransaction = function (username) {
                         console.log('Withdrawn Amount - ' + amount + currency);
                     }
                     else {
-                        console.log('Deposited Amount - ' + responseArray[i] + '$');
+                        console.log('Deposited Amount - ' + responseArray[i] + currency);
                     }
                 }
             });
@@ -90,10 +91,10 @@ This method checkBalance is used to check balance in the existing bank account.
 The method takes username as an argument and retrieves the information.
  */
 checkBalance = function (username) {
-    client.hget(username, 'Deposits', function (err, response) {
+    client.hget(username, 'Deposits' , function (err, response) {
         if (err)
             throw err;
-        console.log('Current Balance in your account is: ' + response+ currency);
+        console.log('Current Balance in your account is: ' + response + currency);
     });
     setTimeout(function () {
         bankBalance(username);
