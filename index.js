@@ -19,7 +19,7 @@ app.use(session({
     store: new RedisStore({
         host: 'localhost', port: 6379, client: client, ttl: 260
     }),
-    secret: 'shhh', //should be changed accordingly
+    secret: 'bankingLedger', //should be changed accordingly
     resave: false,
     saveUninitialized: false
 }));

@@ -9,10 +9,10 @@ require('../app/logic')
 //Questions asked at the beginning
 var questions = [
     {
-        message: "Please register to setup the bank account",
+        message: "Please login if you have the account or register to setup the bank account",
         type: "list",
         name: "bankAccount",
-        choices: ['Register']
+        choices: ['Register','Login']
     }
 
 ];
@@ -20,7 +20,9 @@ inquirer.prompt(questions).then((answers) => {
     if (`${answers.bankAccount}` === 'Register') {
         registerUser();
     }
-
+    else{
+        signInUser();
+    }
 });
 
 /*
@@ -52,7 +54,7 @@ registerUser = function () {
             else {
                 client.hmset(`${answers.Username}`, ['password', bcrypt.hashSync(`${answers.Password}`, null, null), 'Deposits', 0]); //hash passwords
                 console.log('Registered Successfully ... Please proceed to sign-in');
-                signInUser(`${answers.Username}`);
+                signInUser();
             }
         });
 
@@ -61,7 +63,7 @@ registerUser = function () {
 /*
 This method prompt the user to login in-order to access the bank account
  */
-signInUser = function (username) {
+signInUser = function () {
     let questions = [
         {
             message: "Enter your username to login:",
@@ -85,18 +87,18 @@ signInUser = function (username) {
                     else if (bcrypt.compareSync(`${answers.Password}`, res)) { //compare hashed password with the actual password
                         console.log('Logged in Successfully');
                         setTimeout(function () {
-                            bankBalance(username);
+                            bankBalance(`${answers.Username}`);
                         }, 1000);
                     }
                     else {
                         console.log('Oops...Wrong Password!');
-                        signInUser(username);
+                        signInUser();
                     }
                 });
             }
             else if (res === 0){
                 console.log('No user with that username...');
-                signInUser(username);
+                signInUser();
             }
         });
     });

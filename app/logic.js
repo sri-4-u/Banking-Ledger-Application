@@ -15,17 +15,18 @@ makeDeposit = function (username, moneyToBeDeposited) {
     client.hget(username, 'Deposits' , function (err, reply) {
         if (err)
             throw err;
-        let money = Number(reply) + Number(moneyToBeDeposited);
-        client.hmset(username, 'Deposits' , money);
+        let money = Number(moneyToBeDeposited);
         console.log('Amount deposited in your account - '+ money + currency);
-        client.lpush([username + attachedKey, moneyToBeDeposited], function (err) {
+        let newBalance = Number(reply) + Number(moneyToBeDeposited);
+        client.hmset(username, 'Deposits' , newBalance);
+        client.lpush([username + attachedKey, money], function (err) {
             if (err)
                 throw err;
         });
     });
     setTimeout(function () {
         bankBalance(username);
-    },2000);
+    }, 2000);
 };
 
 
@@ -37,14 +38,13 @@ makeWithdrawl = function (username, amountToBeWithdrawn) {
     client.hget(username, 'Deposits' , function (err, res) {
         if (err)
             throw err;
-        let money = Number(amountToBeWithdrawn);
-        console.log(money);
-        if (money < res) {
-            console.log('Amount Withdrawn - '+ amountToBeWithdrawn + currency);
-            let newBalance = res - amountToBeWithdrawn;
+        var money = Number(amountToBeWithdrawn);
+        if (money <= res) {
+            console.log('Amount Withdrawn from your account - '+ money + currency);
+            let newBalance = res - money;
             client.hmset(username, 'Deposits' , newBalance);
-            let money = -amountToBeWithdrawn;
-            client.lpush(username + attachedKey, money, function (err) {
+            let newMoney = -amountToBeWithdrawn;
+            client.lpush(username + attachedKey, newMoney, function (err) {
                 if (err)
                     throw err;
             });
@@ -53,7 +53,7 @@ makeWithdrawl = function (username, amountToBeWithdrawn) {
     });
     setTimeout(function () {
         bankBalance(username);
-    }, 3000);
+    }, 2000);
 };
 
 /*
@@ -83,7 +83,7 @@ checkTransaction = function (username) {
     });
     setTimeout(function () {
         bankBalance(username);
-    }, 5000);
+    }, 3000);
 };
 
 /*
@@ -98,7 +98,7 @@ checkBalance = function (username) {
     });
     setTimeout(function () {
         bankBalance(username);
-    }, 5000);
+    }, 3000);
 };
 
 
